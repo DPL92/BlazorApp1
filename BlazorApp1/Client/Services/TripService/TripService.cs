@@ -19,7 +19,7 @@ namespace BlazorApp1.Client.Services.TripService
 
         public async Task CreateTrip(Trip t)
         {
-            var res = await _http.PostAsJsonAsync("api/trip", v);
+            var res = await _http.PostAsJsonAsync("api/trip", t);
             
             await SetTrips(res);
         }

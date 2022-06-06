@@ -58,7 +58,7 @@ namespace BlazorApp1.Client.Services.LocationService
 
         public async Task UpdateLocation(Location l)
         {
-            var res = await _http.PutAsJsonAsync($"api/driver/{l.locationId}", l);
+            var res = await _http.PutAsJsonAsync($"api/location/{l.locationId}", l);
             await SetLocations(res);
         }
 

@@ -25,13 +25,13 @@ else
 
      <div>
         <label for="driverLastName">Nachname</label>
-        <InputText id="driverLastName" @bind-Value="driver.driverLastName" class="form-control"></InputText>
+        <InputText id="driverLastName" @bind-Value="trip.driver.driverLastName" class="form-control"></InputText>
     </div>
 
 
     <div>
         <label for="license">Führerschein</label>
-        <InputText id="license" @bind-Value="driver.license" class="form-control"></InputText>
+        <InputText id="license" @bind-Value="trip.driver.license" class="form-control"></InputText>
     </div>
 
    
@@ -40,7 +40,7 @@ else
 
     
     <button type="submit" class=" btn btn-primary">Speichern</button>
-     <button type="button" class=" btn btn-danger" @onclick="DeleteDriver"> Löschen </button>
+     <button type="button" class=" btn btn-danger" @onclick="DeleteTrip"> Löschen </button>
 
 </EditForm>
 
@@ -76,7 +76,7 @@ else
         {
 
 
-            trip = await TripService.GetSingleTrip((int)Id);
+            trip = await TripService.getSingleTrip((int)Id);
         }
     }
 
@@ -92,15 +92,15 @@ else
 
         else
         {
-            await TripService.UpdateTrip(driver);
+            await TripService.UpdateTrip(trip);
 
         }
 
     }
 
-    async Task DeleteDriver() {
+    async Task DeleteTrip() {
 
-        await DriverService.DeleteDriver(driver.driverId);
+        await TripService.DeleteTrip(trip.tripId);
     }
 
 
