@@ -1,0 +1,85 @@
+﻿
+
+@page "/trips"
+@inject ITripService TripService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Trips</PageTitle>
+
+
+
+
+<h3> Trips </h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Trip ID </th>
+            <th>Fahrzeug </th>
+            <th>Start </th>
+            <th>Ziel </th>
+            <th>Dauer</th>
+            <th>abgeschlossen</th>
+            
+       </tr>
+    </thead>
+    <tbody>
+        @foreach(var v in TripService.trips)
+        {
+            <tr>
+                <td>
+                    @v.tripId
+                </td>
+                <td>
+                    @v.vehicle.licensePlate
+                </td>
+
+                <td>
+                    @v.startL.locationName
+                </td>
+
+                <td>
+                    @v.endL.locationName
+                </td>
+
+                <td>
+                    @v.duration
+                </td>
+
+                 <td>
+                    @v.finished
+                </td>
+
+               
+                
+                <td>
+                    <button class="btn btn-primary" @onclick= "(() => showTrip(v.tripId))"><i class="oi oi-pencil"></i></button>
+                </td>
+            </tr>
+
+        }
+
+    </tbody>
+
+</table>
+
+<button class="btn btn-primary" @onclick="CreateTrip"> Neues Fahrzeug anlegen</button>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await TripService.GetTrips();
+    }
+
+    void showTrip(int id) {
+
+        NavigationManager.NavigateTo($"trip/{id}");
+    }
+
+    void CreateTrip()
+    {
+        NavigationManager.NavigateTo("/trip");
+
+    }
+}

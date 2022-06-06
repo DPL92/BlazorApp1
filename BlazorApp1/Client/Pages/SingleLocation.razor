@@ -1,0 +1,103 @@
+﻿@page "/location"
+@page "/location/{id:int}"
+@inject ILocationService LocationService
+
+
+
+@if (Id == null)
+{
+    <h3>Neuen Ort  anlegen</h3>
+}
+else
+{
+      <h3> @location.street @location.houseNr  bearbeiten</h3>
+}
+
+
+
+<EditForm Model = "@location" OnSubmit="HandleSubmit">
+
+    <div>
+        <label for="locationName">Stadt</label>
+        <InputText id="locationName" @bind-Value="location.locationName" class="form-control"></InputText>
+    </div>
+
+    <div>
+        <label for="country">Staat</label>
+        <InputText id="country" @bind-Value="location.country" class="form-control"></InputText>
+    </div>
+
+    <div>
+        <label for="postalCode">PLZ</label>
+        <InputNumber id="postalCode" @bind-Value="location.postalCode" class="form-control"></InputNumber>
+    </div>
+
+     <div>
+        <label for="street">Anz. Sitze</label>
+        <InputText id="street" @bind-Value="location.street" class="form-control"></InputText>
+     </div>
+
+    <div>
+        <label for="houseNr">Hausnummer</label>
+        <InputNumber id="houseNr" @bind-Value="location.houseNr" class="form-control"></InputNumber>
+    </div>
+
+    
+
+    
+
+    
+    <button type="submit" class=" btn btn-primary">Speichern</button>
+     <button type="button" class=" btn btn-danger" @onclick="DeleteLocation"> Löschen </button>
+
+</EditForm>
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    Location location = new Location();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id == null)
+        {
+
+
+
+        }
+
+        else
+        {
+
+
+            location = await LocationService.GetSingleLocation((int)Id);
+        }
+    }
+
+
+    async Task HandleSubmit() {
+
+
+        if (Id == null)
+        {
+            await LocationService.CreateLocation(location);
+
+        }
+
+        else
+        {
+            await LocationService.UpdateLocation(location);
+
+        }
+
+    }
+
+    async Task DeleteLocation() {
+
+        await LocationService.DeleteLocation(location.locationId);
+    }
+ }
+

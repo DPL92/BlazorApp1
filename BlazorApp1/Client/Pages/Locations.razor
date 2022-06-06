@@ -1,0 +1,83 @@
+﻿@page "/locations"
+@inject ILocationService LocationService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Orte</PageTitle>
+
+
+
+
+<h3> Orte </h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Ort ID </th>
+            <th>Stadt </th>
+            <th>Staat </th>
+            <th>PLZ </th>
+            <th>Straße </th>
+            <th>Hausnummer </th>
+            
+       </tr>
+    </thead>
+    <tbody>
+        @foreach(var l in LocationService.locations)
+        {
+            <tr>
+                <td>
+                    @l.locationId
+                </td>
+                <td>
+                    @l.locationName
+                </td>
+
+                <td>
+                    @l.country
+                </td>
+
+                <td>
+                    @l.postalCode
+                </td>
+
+                <td>
+                    @l.street
+                </td>
+
+                 <td>
+                    @l.houseNr
+                </td>
+
+               
+                
+                <td>
+                    <button class="btn btn-primary" @onclick= "(() => showLocation(l.locationId))"><i class="oi oi-pencil"></i></button>
+                </td>
+            </tr>
+
+        }
+
+    </tbody>
+
+</table>
+
+<button class="btn btn-primary" @onclick="CreateLocation"> Neuen Ort anlegen</button>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await LocationService.GetLocations();
+    }
+
+    void showLocation(int id) {
+
+        NavigationManager.NavigateTo($"location/{id}");
+    }
+
+    void CreateLocation()
+    {
+        NavigationManager.NavigateTo("/location");
+
+    }
+}

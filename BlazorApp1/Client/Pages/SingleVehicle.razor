@@ -1,0 +1,103 @@
+﻿@page "/vehicle"
+@page "/vehicle/{id:int}"
+@inject IVehicleService VehicleService
+@if (Id == null)
+{
+    <h3>Neues Fahrzeug anlegen</h3>
+}
+else
+{
+      <h3>@vehicle.manufacturer  @vehicle.model bearbeiten</h3>
+}
+
+
+
+<EditForm Model = "@vehicle" OnSubmit="HandleSubmit">
+
+    <div>
+        <label for="manufacturer">Hersteller</label>
+        <InputText id="manufacturer" @bind-Value="vehicle.manufacturer" class="form-control"></InputText>
+    </div>
+
+    <div>
+        <label for="licensePlate">Kennzeichen</label>
+        <InputText id="licensePlate" @bind-Value="vehicle.licensePlate" class="form-control"></InputText>
+    </div>
+
+    <div>
+        <label for="model">Modell</label>
+        <InputText id="model" @bind-Value="vehicle.model" class="form-control"></InputText>
+    </div>
+
+     <div>
+        <label for="seats">Anz. Sitze</label>
+        <InputNumber id="seats" @bind-Value="vehicle.seats" class="form-control"></InputNumber>
+     </div>
+
+    <div>
+        <label for="licensePlate">Kennzeichen</label>
+        <InputText id="licensePlate" @bind-Value="vehicle.licensePlate" class="form-control"></InputText>
+    </div>
+
+    <div>
+        <label for="requiredDL">ben. FS</label>
+        <InputText id="requiredDL" @bind-Value="vehicle.requiredDL" class="form-control"></InputText>
+    </div>
+
+    
+
+    
+    <button type="submit" class=" btn btn-primary">Speichern</button>
+     <button type="button" class=" btn btn-danger" @onclick="DeleteVehicle"> Löschen </button>
+
+</EditForm>
+
+
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    
+    Vehicle vehicle = new Vehicle();
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id == null)
+        {
+
+
+
+        }
+
+        else
+        {
+
+
+            vehicle = await VehicleService.getSingleVehicle((int)Id);
+        }
+    }
+
+
+    async Task HandleSubmit() {
+
+
+        if (Id == null)
+        {
+            await VehicleService.CreateVehicle(vehicle);
+
+        }
+
+        else
+        {
+            await VehicleService.UpdateVehicle(vehicle);
+
+        }
+
+    }
+
+    async Task DeleteVehicle() {
+
+        await VehicleService.DeleteVehicle(vehicle.vehicleId);
+    }
+ }

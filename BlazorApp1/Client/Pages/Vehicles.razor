@@ -1,0 +1,85 @@
+﻿
+
+@page "/vehicles"
+@inject IVehicleService VehicleService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Vehicles</PageTitle>
+
+
+
+
+<h3> Vehicles </h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fahrzeug ID </th>
+            <th>Marke </th>
+            <th>Kennzeichen </th>
+            <th>Modell </th>
+            <th>Anzahl Sitze </th>
+            <th>ben. FS </th>
+            
+       </tr>
+    </thead>
+    <tbody>
+        @foreach(var v in VehicleService.vehicles)
+        {
+            <tr>
+                <td>
+                    @v.vehicleId
+                </td>
+                <td>
+                    @v.manufacturer
+                </td>
+
+                <td>
+                    @v.licensePlate
+                </td>
+
+                <td>
+                    @v.model
+                </td>
+
+                <td>
+                    @v.seats
+                </td>
+
+                 <td>
+                    @v.requiredDL
+                </td>
+
+               
+                
+                <td>
+                    <button class="btn btn-primary" @onclick= "(() => showVehicle(v.vehicleId))"><i class="oi oi-pencil"></i></button>
+                </td>
+            </tr>
+
+        }
+
+    </tbody>
+
+</table>
+
+<button class="btn btn-primary" @onclick="CreateVehicle"> Neues Fahrzeug anlegen</button>
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await VehicleService.GetVehicles();
+    }
+
+    void showVehicle(int id) {
+
+        NavigationManager.NavigateTo($"vehicle/{id}");
+    }
+
+    void CreateVehicle()
+    {
+        NavigationManager.NavigateTo("/vehicle");
+
+    }
+}

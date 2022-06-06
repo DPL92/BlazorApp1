@@ -1,0 +1,75 @@
+﻿<h3>Drivers</h3>
+@page "/drivers"
+@inject IDriverService DriverService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Vehicles</PageTitle>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fahrer ID </th>
+            <th>Vorname </th>
+            <th>Nachname </th>
+            <th>Führerschein </th>
+            
+            
+       </tr>
+    </thead>
+    <tbody>
+        @foreach(var d in DriverService.drivers)
+        {
+            <tr>
+                <td>
+                    @d.driverId
+                </td>
+                <td>
+                    @d.driverFirstName
+                </td>
+
+                <td>
+                    @d.driverLastName
+                </td>
+
+                <td>
+                    @d.license
+                </td>
+
+               
+
+               
+                
+                <td>
+                    <button class="btn btn-primary" @onclick= "(() => showDriver(d.driverId))"><i class="oi oi-pencil"></i></button>
+                </td>
+            </tr>
+
+        }
+
+    </tbody>
+
+</table>
+
+<button class="btn btn-primary" @onclick="CreateDriver"> Neue Fahrer anlegen</button>
+
+
+
+@code {
+
+     protected override async Task OnInitializedAsync()
+    {
+        await DriverService.GetDrivers();
+    }
+
+    void showDriver(int id) {
+
+        NavigationManager.NavigateTo($"driver/{id}");
+    }
+
+    void CreateDriver()
+    {
+        NavigationManager.NavigateTo("/driver");
+
+    }
+
+}
