@@ -39,7 +39,7 @@ namespace BlazorApp1.Client.Services.TripService
         }
 
        
-        public async Task<Trip> getSingleTrip(int id)
+        public async Task<Trip> GetSingleTrip(int id)
         {
 
             var res = await _http.GetFromJsonAsync<Trip>($"api/trip/{id}");
@@ -57,7 +57,7 @@ namespace BlazorApp1.Client.Services.TripService
 
         public async Task UpdateTrip(Trip t)
         {
-            var res = await _http.PutAsJsonAsync($"api/ukraine/{t.tripId}", t);
+            var res = await _http.PutAsJsonAsync($"api/trip/{t.tripId}", t);
             await SetTrips(res);
         }
     }

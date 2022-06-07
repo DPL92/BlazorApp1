@@ -18,7 +18,12 @@ namespace BlazorApp1.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Trip>>> GetTrips()
         {
-            var trips = await _context.Trips.ToListAsync();
+            var trips = await _context.Trips
+                .Include(t => t.driver)
+                .Include(t => t.startL)
+                .Include(t=> t.endL)
+                .Include(t => t.vehicle)
+                .ToListAsync();
             return Ok(trips);
 
         }
@@ -31,7 +36,12 @@ namespace BlazorApp1.Server.Controllers
 
         public async Task<ActionResult<Trip>> GetSingleTrip(int id)
         {
-            var trip = await _context.Trips.FirstOrDefaultAsync(t => t.tripId == id);
+            var trip = await _context.Trips
+                .Include(t => t.driver)
+                .Include(t => t.startL)
+                .Include(t => t.endL)
+                .Include(t => t.vehicle)
+                .FirstOrDefaultAsync(t => t.tripId == id);
             if (trip == null)
             {
                 return NotFound("No trip with this id");
@@ -46,6 +56,10 @@ namespace BlazorApp1.Server.Controllers
 
         public async Task<ActionResult<List<Trip>>> CreateTrip(Trip t)
         {
+            t.vehicle = null;
+            t.startL = null;
+            t.endL = null;
+            t.driver = null;
             _context.Trips.Add(t);
             await _context.SaveChangesAsync();
             return Ok(await GetDbTrips());
@@ -61,19 +75,25 @@ namespace BlazorApp1.Server.Controllers
 
         public async Task<ActionResult<List<Trip>>> UpdateTrip(Trip t, int id)
         {
-            var dbTrip = await _context.Trips.FirstOrDefaultAsync(t=> t.tripId == id);
+            var dbTrip = await _context.Trips
+                /*.Include(t => t.startL)
+                .Include(t => t.endL)
+                .Include(t => t.vehicle)
+                .Include(t => t.driver) */
+                .FirstOrDefaultAsync(t=> t.tripId == id);
             if (dbTrip == null) return NotFound("Kein Trip mit dieser Id");
 
-            dbTrip.vehicle = t.vehicle;
-            dbTrip.endL = t.endL;
-            dbTrip.startL = t.startL;
-            dbTrip.endId = t.endId;
-            dbTrip.startId = t.startId;
+            //dbTrip.vehicle = t.vehicle;
+            //dbTrip.endL = t.endL;
+            //dbTrip.startL = t.startL;
+            dbTrip.endLId = t.endLId;
+            dbTrip.startLId = t.startLId;
             dbTrip.duration = t.duration;
             dbTrip.date = t.date;
-            dbTrip.driver = t.driver;
+            //dbTrip.driver = t.driver;
             dbTrip.vehicleId = t.vehicleId;
             dbTrip.finished = t.finished;
+            dbTrip.driverId = t.driverId;
 
             await _context.SaveChangesAsync();
             return Ok(await GetDbTrips());

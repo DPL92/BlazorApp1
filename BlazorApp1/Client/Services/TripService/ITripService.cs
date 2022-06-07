@@ -9,7 +9,7 @@
         Task GetTrips();
 
        
-        Task<Trip> getSingleTrip(int id);
+        Task<Trip> GetSingleTrip(int id);
 
         Task CreateTrip(Trip t);
         Task UpdateTrip(Trip t);

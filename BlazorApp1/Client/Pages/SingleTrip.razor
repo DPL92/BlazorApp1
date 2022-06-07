@@ -2,6 +2,9 @@
 @page "/trip"
 @page "/trip/{id:int}"
 @inject ITripService TripService
+@inject IVehicleService VehicleService
+@inject IDriverService DriverService
+@inject ILocationService LocationService
 
 <h3>Fahrten</h3>
 
@@ -18,7 +21,54 @@ else
 
 <EditForm Model = "@trip" OnSubmit="HandleSubmit">
 
+
     <div>
+        <label>Fahrzeug</label>
+        <InputSelect @bind-Value= "trip.vehicleId" class= "form-select">
+            @foreach (var vehicle in VehicleService.vehicles)
+            {
+                <option value=@vehicle.vehicleId>@vehicle.manufacturer @vehicle.model</option>
+            }
+
+        </InputSelect>
+    </div>
+
+     <div>
+        <label>Fahrer</label>
+        <InputSelect @bind-Value= "trip.driverId" class= "form-select">
+            @foreach (var driver in DriverService.drivers)
+            {
+                <option value=@driver.driverId>@driver.driverFirstName @driver.driverLastName</option>
+            }
+
+        </InputSelect>
+    </div>
+
+    <div>
+        <label>Start</label>
+        <InputSelect @bind-Value= "trip.startLId" class= "form-select">
+            @foreach (var location in LocationService.locations)
+            {
+                <option value=@location.locationId>@location.locationName @location.street </option>
+            }
+
+        </InputSelect>
+    </div>
+
+    <div>
+        <label>End</label>
+        <InputSelect @bind-Value= "trip.endLId" class= "form-select">
+            @foreach (var location in LocationService.locations)
+            {
+                <option value=@location.locationId>@location.locationName @location.street </option>
+            }
+
+        </InputSelect>
+    </div>
+
+
+
+     <div>
         <label for="duration">Dauer</label>
         <InputNumber id="duration" @bind-Value="trip.duration" class="form-control"></InputNumber>
     </div>
@@ -28,11 +78,16 @@ else
         <InputText id="date" @bind-Value="trip.date" class="form-control"></InputText>
     </div>
 
-
     <div>
-        <label for="license">Führerschein</label>
-        <InputText id="license" @bind-Value="driver.license" class="form-control"></InputText>
-    </div>
+
+        <label>Abgeschlossen
+            <InputCheckbox @bind-Value="trip.finished" />
+        </label
+
+
+    </div><br />
+
+    
 
    
 
@@ -40,7 +95,7 @@ else
 
     
     <button type="submit" class=" btn btn-primary">Speichern</button>
-     <button type="button" class=" btn btn-danger" @onclick="DeleteDriver"> Löschen </button>
+     <button type="button" class=" btn btn-danger" @onclick="DeleteTrip"> Löschen </button>
 
 </EditForm>
 
@@ -59,15 +114,33 @@ else
 @code {
     [Parameter]
     public int? Id { get; set; }
-    
-    Trip trip = new Trip();
+    string btnText = string.Empty;
 
+    Trip trip = new Trip { driver = new Driver(), startL  = new Location(), endL  = new Location(), vehicle = new Vehicle()};
+
+
+    protected override async Task OnInitializedAsync() {
+
+        btnText = Id == null ? "Neue Fahrt speichern" : "Fahrt aktualisieren";
+        await VehicleService.GetVehicles();
+        await DriverService.GetDrivers();
+        await LocationService.GetLocations();
+    }
 
     protected override async Task OnParametersSetAsync()
     {
         if (Id == null)
         {
 
+            trip.driver = DriverService.drivers[0];
+            trip.startL = LocationService.locations[0];
+            trip.endL = LocationService.locations[0];
+            trip.vehicle = VehicleService.vehicles[0];
+
+            trip.driverId = trip.driver.driverId;
+            trip.endLId = trip.endL.locationId;
+            trip.startLId = trip.startL.locationId;
+            trip.vehicleId = trip.vehicle.vehicleId;
 
 
         }
@@ -92,15 +165,15 @@ else
 
         else
         {
-            await TripService.UpdateTrip(driver);
+            await TripService.UpdateTrip(trip);
 
         }
 
     }
 
-    async Task DeleteDriver() {
+    async Task DeleteTrip() {
 
-        await DriverService.DeleteDriver(driver.driverId);
+        await TripService.DeleteTrip(trip.tripId);
     }
 
 
