@@ -85,9 +85,10 @@ else
         </label
 
 
-    </div><br />
-
-    
+    <div>
+        <label for="license">Führerschein</label>
+        <InputText id="license" @bind-Value="driver.license" class="form-control"></InputText>
+    </div>
 
    
 
@@ -149,7 +150,7 @@ else
         {
 
 
-            trip = await TripService.GetSingleTrip((int)Id);
+            trip = await TripService.getSingleTrip((int)Id);
         }
     }
 
